@@ -1,0 +1,440 @@
+{
+  "users": [
+    {
+      "id": "usr_ghulam_mujtaba",
+      "email": "mujtabaqureshi3829@gmail.com",
+      "passwordHash": "$2b$10$A9o9jgs5kMMfDdOX6f38XeMiObjILk6Pvfu7bY./ENjGGSLhvS7ke",
+      "role": "super_admin",
+      "fullName": "Ghulam Mujtaba",
+      "createdAt": "2026-10-11T00:00:00.000Z"
+    }
+  ],
+  "counselors": [],
+  "counselorApplications": [
+    {
+      "id": "capp_1792082268606_p3j8z",
+      "trackingId": "TVS-SEC-628049",
+      "fullName": "Barrister Kamran Ali",
+      "displayName": "Barrister Kamran Ali",
+      "email": "kamran@lawchambers.pk",
+      "phone": "+923001234567",
+      "whatsappNumber": "+923001234567",
+      "nationalIdNumber": "Pending Verification",
+      "nationalIdType": "CNIC",
+      "documentProofUrl": "",
+      "licenseNumber": "Pending Verification",
+      "issuingAuthority": "Statutory Bar / Regulatory Board",
+      "agencyName": "",
+      "physicalAddress": "Address on file with compliance desk",
+      "city": "Lahore",
+      "country": "Pakistan",
+      "postalCode": "",
+      "gpsLocationOrIp": "127.0.0.1",
+      "taxIdOrNtn": "",
+      "bankName": "Pending Vetting",
+      "bankAccountTitle": "Barrister Kamran Ali",
+      "iban": "Pending Vetting",
+      "swiftCode": "",
+      "emergencyContactName": "",
+      "emergencyContactPhone": "",
+      "emergencyContactRelation": "",
+      "expertise": [
+        "Study Visa",
+        "Visit Visa"
+      ],
+      "destinations": [
+        "UK",
+        "Canada"
+      ],
+      "visaCategories": [
+        "Study Visa",
+        "Visit Visa"
+      ],
+      "languages": [
+        "English"
+      ],
+      "experienceYears": 7,
+      "consultationDuration": 45,
+      "consultationFee": 12000,
+      "preferredCurrency": "PKR",
+      "bio": "Accredited international visa advisor and document audit specialist.",
+      "status": "pending_review",
+      "fraudRiskScore": 0,
+      "antiFraudAgreementAccepted": false,
+      "submittedAt": "2026-10-15T16:37:48.606Z"
+    }
+  ],
+  "bookings": [
+    {
+      "id": "book_1791710821065",
+      "referenceCode": "TVS-2026-13389",
+      "counselorId": "cns_1791710729552",
+      "counselorName": "Ghulam Mujtaba Qureshi",
+      "customerName": "Ghulam Mujtaba Qureshi",
+      "customerEmail": "mujtabaqureshi3829@gmail.com",
+      "customerPhone": "+923115461668",
+      "countryOfResidence": "Pakistan",
+      "destination": "UK",
+      "visaCategory": "Visit Visa",
+      "consultationType": "Visit Visa Expert Session",
+      "preferredDate": "2026-10-12",
+      "preferredTimeSlot": "02:00 PM",
+      "reason": "Visit Visa profile evaluation for UK",
+      "language": "English / Urdu",
+      "notes": "",
+      "status": "confirmed",
+      "fee": 20000,
+      "currency": "PKR",
+      "createdAt": "2026-10-11T09:27:01.065Z",
+      "updatedAt": "2026-10-11T09:27:51.948Z"
+    }
+  ],
+  "payments": [
+    {
+      "id": "pay_1791710821066",
+      "bookingId": "book_1791710821065",
+      "bookingReference": "TVS-2026-13389",
+      "amount": 20000,
+      "currency": "PKR",
+      "method": "easypaisa",
+      "status": "rejected",
+      "transactionReference": "",
+      "createdAt": "2026-10-11T09:27:01.066Z",
+      "verifiedBy": "mujtabaqureshi3829@gmail.com",
+      "verifiedAt": "2026-10-15T16:11:03.198Z",
+      "proofNote": "Rejected"
+    }
+  ],
+  "enquiries": [
+    {
+      "id": "enq_1791710352339",
+      "name": "Ali Raza",
+      "email": "ali@gmail.com",
+      "phone": "+923001234567",
+      "visaCategory": "Study Visa",
+      "destination": "UK",
+      "message": "[STUDY VISA ASSESSMENT] Target: UK | Program: Master degree | GPA: 3.4 | English: IELTS 6.5 | Funds: 28-day ready | Score: 90%",
+      "status": "new",
+      "createdAt": "2026-10-11T09:19:12.339Z"
+    },
+    {
+      "id": "enq_1791709458148",
+      "name": "Ghulam Mujtaba Qureshi",
+      "email": "mujtabaqureshi3829@gmail.com",
+      "phone": "+923115461668",
+      "visaCategory": "Visit Visa",
+      "destination": "Canada",
+      "message": "Eligibility Assessment: Score 80% | Education: Intermediate / A-Levels | English: IELTS (6.5+) | Funds: Yes, 28-day funds ready | Travel: Fresh passport",
+      "status": "new",
+      "createdAt": "2026-10-11T09:04:18.148Z"
+    }
+  ],
+  "auditLogs": [
+    {
+      "id": "log_1792082268607_shnje",
+      "actorEmail": "system",
+      "action": "COUNSELOR_APPLICATION_SUBMITTED",
+      "targetType": "CounselorApplication",
+      "targetId": "capp_1792082268606_p3j8z",
+      "details": "Application from Barrister Kamran Ali (TVS-SEC-628049)",
+      "timestamp": "2026-10-15T16:37:48.607Z"
+    },
+    {
+      "id": "log_1792081749324_k2rrq",
+      "actorEmail": "mujtabaqureshi3829@gmail.com",
+      "action": "CONTENT_UPDATED",
+      "targetType": "SiteContent",
+      "targetId": "main",
+      "details": "Updated CMS site content",
+      "timestamp": "2026-10-15T16:29:09.324Z"
+    },
+    {
+      "id": "log_1792081746599_2wsjg",
+      "actorEmail": "mujtabaqureshi3829@gmail.com",
+      "action": "CONTENT_UPDATED",
+      "targetType": "SiteContent",
+      "targetId": "main",
+      "details": "Updated CMS site content",
+      "timestamp": "2026-10-15T16:29:06.599Z"
+    },
+    {
+      "id": "log_1792081732556_usgos",
+      "actorEmail": "mujtabaqureshi3829@gmail.com",
+      "action": "LOGIN_SUCCESS",
+      "targetType": "User",
+      "targetId": "usr_ghulam_mujtaba",
+      "details": "Master Administrator Ghulam Mujtaba authenticated successfully",
+      "timestamp": "2026-10-15T16:28:52.556Z"
+    },
+    {
+      "id": "log_1792081705663_o6map",
+      "actorEmail": "mujtabaqureshi3829@gmail.com",
+      "action": "CONTENT_UPDATED",
+      "targetType": "SiteContent",
+      "targetId": "main",
+      "details": "Updated CMS site content",
+      "timestamp": "2026-10-15T16:28:25.663Z"
+    },
+    {
+      "id": "log_1792081677756_w4vvx",
+      "actorEmail": "mujtabaqureshi3829@gmail.com",
+      "action": "CONTENT_UPDATED",
+      "targetType": "SiteContent",
+      "targetId": "main",
+      "details": "Updated CMS site content",
+      "timestamp": "2026-10-15T16:27:57.756Z"
+    },
+    {
+      "id": "log_1792081662602_r7fnw",
+      "actorEmail": "mujtabaqureshi3829@gmail.com",
+      "action": "LOGIN_SUCCESS",
+      "targetType": "User",
+      "targetId": "usr_ghulam_mujtaba",
+      "details": "Master Administrator Ghulam Mujtaba authenticated successfully",
+      "timestamp": "2026-10-15T16:27:42.602Z"
+    },
+    {
+      "id": "log_1792081634104_an90m",
+      "actorEmail": "mujtabaqureshi3829@gmail.com",
+      "action": "CONTENT_UPDATED",
+      "targetType": "SiteContent",
+      "targetId": "main",
+      "details": "Updated CMS site content",
+      "timestamp": "2026-10-15T16:27:14.104Z"
+    },
+    {
+      "id": "log_1792081630592_nvs9e",
+      "actorEmail": "mujtabaqureshi3829@gmail.com",
+      "action": "CONTENT_UPDATED",
+      "targetType": "SiteContent",
+      "targetId": "main",
+      "details": "Updated CMS site content",
+      "timestamp": "2026-10-15T16:27:10.592Z"
+    },
+    {
+      "id": "log_1792081600519_ryc3r",
+      "actorEmail": "mujtabaqureshi3829@gmail.com",
+      "action": "LOGIN_SUCCESS",
+      "targetType": "User",
+      "targetId": "usr_ghulam_mujtaba",
+      "details": "Master Administrator Ghulam Mujtaba authenticated successfully",
+      "timestamp": "2026-10-15T16:26:40.519Z"
+    },
+    {
+      "id": "log_1792081538235_aplqy",
+      "actorEmail": "mujtabaqureshi3829@gmail.com",
+      "action": "CONTENT_UPDATED",
+      "targetType": "SiteContent",
+      "targetId": "main",
+      "details": "Updated CMS site content",
+      "timestamp": "2026-10-15T16:25:38.235Z"
+    },
+    {
+      "id": "log_1792081493612_bm45s",
+      "actorEmail": "mujtabaqureshi3829@gmail.com",
+      "action": "LOGIN_SUCCESS",
+      "targetType": "User",
+      "targetId": "usr_ghulam_mujtaba",
+      "details": "Master Administrator Ghulam Mujtaba authenticated successfully",
+      "timestamp": "2026-10-15T16:24:53.612Z"
+    },
+    {
+      "id": "log_1792080663199_rt1wt",
+      "actorEmail": "mujtabaqureshi3829@gmail.com",
+      "action": "PAYMENT_REJECTED",
+      "targetType": "Payment",
+      "targetId": "pay_1791710821066",
+      "details": "Payment for booking TVS-2026-13389 marked as REJECTED",
+      "timestamp": "2026-10-15T16:11:03.199Z"
+    },
+    {
+      "id": "log_1792080656629_d87i3",
+      "actorEmail": "mujtabaqureshi3829@gmail.com",
+      "action": "COUNSELOR_DELETED",
+      "targetType": "Counselor",
+      "targetId": "cns_1791710729552",
+      "details": "Deleted counselor profile: Ghulam Mujtaba Qureshi",
+      "timestamp": "2026-10-15T16:10:56.629Z"
+    },
+    {
+      "id": "log_1792080578170_dat1h",
+      "actorEmail": "mujtabaqureshi3829@gmail.com",
+      "action": "LOGIN_SUCCESS",
+      "targetType": "User",
+      "targetId": "usr_ghulam_mujtaba",
+      "details": "Master Administrator Ghulam Mujtaba authenticated successfully",
+      "timestamp": "2026-10-15T16:09:38.170Z"
+    },
+    {
+      "id": "log_1791914665882_30pxf",
+      "actorEmail": "mujtabaqureshi3829@gmail.com",
+      "action": "COUNSELOR_DELETED",
+      "targetType": "Counselor",
+      "targetId": "test_fake_id",
+      "details": "Deleted counselor profile: test_fake_id",
+      "timestamp": "2026-10-13T18:04:25.882Z"
+    },
+    {
+      "id": "log_1791914665832_pwi5s",
+      "actorEmail": "mujtabaqureshi3829@gmail.com",
+      "action": "LOGIN_SUCCESS",
+      "targetType": "User",
+      "targetId": "usr_ghulam_mujtaba",
+      "details": "Master Administrator Ghulam Mujtaba authenticated successfully",
+      "timestamp": "2026-10-13T18:04:25.832Z"
+    },
+    {
+      "id": "log_1791914652674_78p6l",
+      "actorEmail": "mujtabaqureshi3829@gmail.com",
+      "action": "LOGIN_SUCCESS",
+      "targetType": "User",
+      "targetId": "usr_ghulam_mujtaba",
+      "details": "Master Administrator Ghulam Mujtaba authenticated successfully",
+      "timestamp": "2026-10-13T18:04:12.674Z"
+    },
+    {
+      "id": "log_1791713612198_3tbnk",
+      "actorEmail": "mujtabaqureshi3829@gmail.com",
+      "action": "LOGIN_SUCCESS",
+      "targetType": "User",
+      "targetId": "usr_ghulam_mujtaba",
+      "details": "Master Administrator Ghulam Mujtaba authenticated successfully",
+      "timestamp": "2026-10-11T10:13:32.198Z"
+    },
+    {
+      "id": "log_1791710871949_ciy75",
+      "actorEmail": "mujtabaqureshi3829@gmail.com",
+      "action": "PAYMENT_VERIFIED",
+      "targetType": "Payment",
+      "targetId": "pay_1791710821066",
+      "details": "Payment for booking TVS-2026-13389 marked as VERIFIED",
+      "timestamp": "2026-10-11T09:27:51.949Z"
+    },
+    {
+      "id": "log_1791710729552_qc673",
+      "actorEmail": "mujtabaqureshi3829@gmail.com",
+      "action": "COUNSELOR_CREATED",
+      "targetType": "Counselor",
+      "targetId": "cns_1791710729552",
+      "details": "Created counselor profile for Ghulam Mujtaba Qureshi (isPublic: true)",
+      "timestamp": "2026-10-11T09:25:29.552Z"
+    },
+    {
+      "id": "log_1791710370965_a3q4o",
+      "actorEmail": "mujtabaqureshi3829@gmail.com",
+      "action": "LOGIN_SUCCESS",
+      "targetType": "User",
+      "targetId": "usr_ghulam_mujtaba",
+      "details": "Master Administrator Ghulam Mujtaba authenticated successfully",
+      "timestamp": "2026-10-11T09:19:30.965Z"
+    },
+    {
+      "id": "log_1791710314022_3v4cv",
+      "actorEmail": "mujtabaqureshi3829@gmail.com",
+      "action": "LOGIN_SUCCESS",
+      "targetType": "User",
+      "targetId": "usr_ghulam_mujtaba",
+      "details": "Master Administrator Ghulam Mujtaba authenticated successfully",
+      "timestamp": "2026-10-11T09:18:34.022Z"
+    },
+    {
+      "id": "log_1791709526184_pjx3j",
+      "actorEmail": "mujtabaqureshi3829@gmail.com",
+      "action": "OWNER_INITIALIZED",
+      "targetType": "User",
+      "targetId": "usr_1791709526184",
+      "details": "First-time super admin owner initialized system",
+      "timestamp": "2026-10-11T09:05:26.184Z"
+    }
+  ],
+  "siteContent": {
+    "heroEyebrow": "STUDY / VISIT / BUSINESS",
+    "heroHeadline1": "Your Next Chapter",
+    "heroHeadline2": "Starts With Clarity.",
+    "heroSubtitle": "Explore global opportunities with expert guidance, personalized visa assessments and trusted consultation services — all from the comfort of your home, anywhere in Pakistan.",
+    "heroImageUrl": "",
+    "heroImageCrop": "center 25%",
+    "heroShowWatermark": true,
+    "heroWatermarkText": "THE VISA SYNDICATE · WORLDWIDE",
+    "worldwideTagline": "Operating Worldwide in 120+ Jurisdictions · Global Sovereign Advisory",
+    "contactEmail": "admissions@thevisasyndicate.com",
+    "contactPhone": "+92 300 0000000",
+    "officeAddress": "Remote-First Online Consultation Desk (Serving Nationwide & Overseas)",
+    "bankDetails": {
+      "bankName": "SadaPay",
+      "accountTitle": "The Visa Syndicate / Ghulam Mujtaba",
+      "accountNumber": "03400131732",
+      "iban": "03400131732",
+      "branch": "SadaPay Digital Pakistan",
+      "sadapayNumber": "03400131732",
+      "jazzcashNumber": "",
+      "easypaisaNumber": ""
+    }
+  },
+  "blogs": [
+    {
+      "id": "blog_uk_visas_2025",
+      "title": "UK Student & Graduate Route Visa 2024-2025: Key Financial & Maintenance Updates",
+      "slug": "uk-student-graduate-visa-2025-updates",
+      "category": "Study Visa",
+      "excerpt": "An authoritative breakdown of UKVI maintenance threshold changes, CAS issuance deadlines, and how to structure 28-day holding funds for Pakistani applicants.",
+      "content": "Navigating the United Kingdom student visa process requires meticulous attention to financial provenance and statutory timelines. \n\n### 1. Mandatory 28-Day Financial Holding Rule\nThe United Kingdom Visas and Immigration (UKVI) enforces strict compliance regarding proof of funds. Tuition fees for the first academic year plus living costs must be held in an acceptable financial institution for a consecutive 28-day period ending within 31 days of the visa application date.\n\n### 2. Living Costs Benchmark (London vs Outside London)\n- **Inside London:** £1,483 per month (up to 9 months, total £13,347)\n- **Outside London:** £1,136 per month (up to 9 months, total £10,224)\n\n### 3. Credibility Interview Strategies\nCaseworkers frequently assess student genuine intent through credibility interviews. You must be prepared to articulate:\n- Why you selected this specific university over alternative international institutions.\n- How your degree module architecture connects to your long-term career in Pakistan or internationally.\n- Accurate awareness of post-study graduate route permissions.",
+      "coverImage": "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&w=1200&q=80",
+      "author": "Ghulam Mujtaba",
+      "readTime": "4 min read",
+      "publishedAt": "2026-10-11T18:04:06.840Z",
+      "isPublished": true,
+      "tags": [
+        "UKVI",
+        "Study Visa",
+        "CAS",
+        "Maintenance Funds"
+      ]
+    },
+    {
+      "id": "blog_schengen_rejection_audit",
+      "title": "Overcoming Schengen Visa Refusals: Audit Justification & Re-Application Protocol",
+      "slug": "overcoming-schengen-visa-refusals-protocol",
+      "category": "Visit Visa",
+      "excerpt": "Received a standard Box 10 or Box 13 Schengen refusal notice? Learn how forensic itinerary design and ties to Pakistan can turn refusals into approvals.",
+      "content": "A Schengen visa refusal under standard check-boxes (such as \"justification for the purpose and conditions of the intended stay was not reliable\") is not a permanent barrier. It is a sign that your dossier left critical ambiguities.\n\n### The Most Common Refusal Triggers\n1. **Unsubstantiated Ties to Home Country:** Consulates need irrefutable evidence of family, economic, or occupational obligations that ensure return.\n2. **Generic Dummy Bookings:** Non-ticketed or canceled flight reservations that fail PNR validation during embassy processing.\n3. **Incoherent Day-by-Day Itineraries:** Travel plans that do not logically match hotel reservations and train/flight hops across member states.\n\n### Strategic Appeal vs Fresh Application\nIn 85% of cases, submitting a fresh, meticulously restructured application with a comprehensive legal Cover Letter produces a faster resolution than an embassy appeal that could take up to 90 days.",
+      "coverImage": "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&w=1200&q=80",
+      "author": "Ghulam Mujtaba",
+      "readTime": "6 min read",
+      "publishedAt": "2026-10-08T18:04:06.840Z",
+      "isPublished": true,
+      "tags": [
+        "Schengen",
+        "Visit Visa",
+        "Refusal Audit",
+        "Europe"
+      ]
+    },
+    {
+      "id": "blog_canada_study_permit_pal",
+      "title": "Canada Study Permit Roadmap: Provincial Attestation Letters (PAL) & SDS Guidelines",
+      "slug": "canada-study-permit-pal-sds-guidelines",
+      "category": "Study Visa",
+      "excerpt": "Detailed guide on securing your Provincial Attestation Letter, GIC requirements, and navigating the revised Canadian international student quota.",
+      "content": "Immigration, Refugees and Citizenship Canada (IRCC) introduced fundamental reforms to international student intake quotas. Here is what every applicant must know to ensure visa issuance.\n\n### The Provincial Attestation Letter (PAL)\nExcept for Master's and Doctoral degree students, every college or undergraduate applicant must possess an official PAL issued by the province before lodging their study permit application.\n\n### Guaranteed Investment Certificate (GIC)\nTo demonstrate financial capability under the Student Direct Stream (SDS) and general stream, applicants must maintain the updated GIC amount (currently $20,635 CAD) in an eligible Canadian bank.",
+      "coverImage": "https://images.unsplash.com/photo-1503614472-8c93d56e92ce?auto=format&fit=crop&w=1200&q=80",
+      "author": "Ghulam Mujtaba",
+      "readTime": "5 min read",
+      "publishedAt": "2026-10-06T18:04:06.840Z",
+      "isPublished": true,
+      "tags": [
+        "Canada",
+        "IRCC",
+        "PAL",
+        "Study Permit",
+        "GIC"
+      ]
+    }
+  ],
+  "supabaseConfig": {
+    "projectUrl": "",
+    "anonKey": "",
+    "serviceRoleKey": "",
+    "isLiveSyncEnabled": false
+  }
+}

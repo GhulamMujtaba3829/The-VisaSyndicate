@@ -1,0 +1,6 @@
+{
+  "name": "The Visa Syndicate",
+  "description": "Premium global visa consultancy for Study, Visit, and Business visa pathways with verified counselor bookings and statutory assessments.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
