@@ -268,7 +268,6 @@ export const JoinCounselorModal: React.FC<JoinCounselorModalProps> = ({
                 </button>
               </div>
             </div>
-            </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-6">
               {errorMsg && (

@@ -282,10 +282,9 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({
                 <Building2 className="w-6 h-6" />
               </div>
               <div>
-                <h4 className="text-base font-bold text-[#202124]">Nationwide Remote Consultation</h4>
+                <h4 className="text-base font-bold text-[#202124]">Nationwide & Internationally Remote Consultation</h4>
                 <p className="text-xs text-[#6B7078] mt-1 leading-relaxed">
-                  Book from Karachi, Lahore, Islamabad, Peshawar, or Quetta. Complete consultation delivered
-                  securely via encrypted video call with documented case roadmaps.
+                  Book from Karachi, Lahore, Islamabad, Peshawar, Quetta, or globally from the UAE, Saudi Arabia, UK, and Europe. Complete consultation delivered securely via encrypted video call with documented case roadmaps.
                 </p>
               </div>
             </div>

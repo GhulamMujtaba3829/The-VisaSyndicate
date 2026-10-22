@@ -13,7 +13,7 @@ import { DestinationModal } from './components/DestinationModal';
 import { AdminPortal } from './components/AdminPortal';
 import { WelcomeScreen } from './components/WelcomeScreen';
 import { BlogModal } from './components/BlogModal';
-import { CounselorJoinModal } from './components/CounselorJoinModal';
+import { JoinCounselorModal } from './components/JoinCounselorModal';
 import { PublicCounselor, Booking, Payment } from './lib/api';
 import { Bell, BookOpen, X, ArrowRight } from 'lucide-react';
 
@@ -313,7 +313,7 @@ export default function App() {
       />
 
       {/* Public Counselor Panel Enrollment Modal */}
-      <CounselorJoinModal
+      <JoinCounselorModal
         isOpen={joinCounselorOpen}
         onClose={() => setJoinCounselorOpen(false)}
         onApplicationSubmitted={(app) => {

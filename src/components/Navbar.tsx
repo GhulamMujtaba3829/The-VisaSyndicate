@@ -250,7 +250,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             {onOpenJoinCounselor && (
               <button
                 onClick={onOpenJoinCounselor}
-                className="hidden md:inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold text-[#C8101E] hover:text-white bg-[#C8101E]/10 hover:bg-[#C8101E] rounded-full transition-all cursor-pointer border border-[#C8101E]/20"
+                className="hidden md:inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold text-[#C8101E] hover:text-white bg-[#C8101E]/10 hover:bg-[#C8101E] rounded-full transition-all cursor-pointer border border-[#C8101E]/20 whitespace-nowrap"
                 title="Join as Counselor"
               >
                 <ShieldCheck className="w-3.5 h-3.5" />
@@ -261,7 +261,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Track Booking Button */}
             <button
               onClick={onOpenTrackBooking}
-              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#760B16] bg-[#F1EEEC] hover:bg-[#E9DAD9] rounded-full transition-colors cursor-pointer"
+              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#760B16] bg-[#F1EEEC] hover:bg-[#E9DAD9] rounded-full transition-colors cursor-pointer whitespace-nowrap"
             >
               <CalendarCheck className="w-3.5 h-3.5" />
               <span>Track Booking</span>
@@ -270,7 +270,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Primary Action Button - Check Your Eligibility */}
             <button
               onClick={onOpenEligibility}
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#C8101E] hover:bg-[#760B16] text-white text-xs sm:text-[13px] font-semibold rounded-full shadow-sm hover:shadow transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0 shrink-0"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#C8101E] hover:bg-[#760B16] text-white text-xs sm:text-[13px] font-semibold rounded-full shadow-sm hover:shadow transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0 shrink-0 whitespace-nowrap"
             >
               <span>Check Your Eligibility</span>
               <ArrowRight className="w-3.5 h-3.5" />
