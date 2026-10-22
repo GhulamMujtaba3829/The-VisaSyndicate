@@ -146,8 +146,6 @@ export const JoinCounselorModal: React.FC<JoinCounselorModalProps> = ({
       if (onApplicationSubmitted) {
         onApplicationSubmitted(result.application);
       }
-      // Automatically trigger WhatsApp direct transmission
-      openCounselorWhatsApp(result.application);
     } catch (err: any) {
       setErrorMsg(err.message || 'Failed to submit application. Please check all fields.');
     } finally {

@@ -96,8 +96,6 @@ export const LearnAndContactSection: React.FC<LearnAndContactProps> = ({ onOpenB
       setSending(false);
     }
 
-    // Automatically trigger direct WhatsApp transmission
-    openWhatsAppInquiry(payload);
     setSentSuccess(true);
   };
 

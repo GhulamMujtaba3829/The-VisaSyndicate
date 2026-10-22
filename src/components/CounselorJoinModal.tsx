@@ -110,8 +110,6 @@ export const CounselorJoinModal: React.FC<CounselorJoinModalProps> = ({
       if (res.success && res.application) {
         setSubmittedApp(res.application);
         onApplicationSubmitted?.(res.application);
-        // Automatically open WhatsApp direct submission
-        openCounselorWhatsApp(res.application);
       } else {
         setError(res.message || 'Failed to submit application. Please try again.');
       }
