@@ -126,11 +126,6 @@ export const JoinCounselorModal: React.FC<JoinCounselorModalProps> = ({
       return;
     }
 
-    if (!formData.iban.trim()) {
-      setErrorMsg('Bank IBAN is mandatory for financial tracking and fraud prevention.');
-      return;
-    }
-
     setSubmitting(true);
     try {
       const payload = {
@@ -187,21 +182,21 @@ export const JoinCounselorModal: React.FC<JoinCounselorModalProps> = ({
         {/* Scrollable Form Body */}
         <div className="p-5 sm:p-7 overflow-y-auto space-y-6 flex-1 text-xs text-[#202124]">
           {completedApp ? (
-            /* Success Confirmation Dossier */
-            <div className="space-y-6 text-center py-6">
+            /* Success Confirmation State */
+            <div className="space-y-6 text-center py-8">
               <div className="w-16 h-16 rounded-full bg-emerald-50 border-2 border-emerald-500 text-emerald-600 flex items-center justify-center mx-auto shadow-md">
                 <CheckCircle2 className="w-8 h-8" />
               </div>
 
               <div className="space-y-2">
                 <span className="text-xs font-bold text-emerald-700 tracking-wider uppercase block">
-                  Accreditation Dossier Registered & Prepared for WhatsApp
+                  Accreditation Application Submitted
                 </span>
                 <h3 className="text-2xl font-serif-brand font-bold text-[#202124]">
                   Application Under Security Review
                 </h3>
-                <p className="text-xs text-[#6B7078] max-w-lg mx-auto">
-                  Your identity documents, bar license, and financial tracking data have been recorded. Transmit your dossier directly to Administrator Ghulam Mujtaba (+92 340 0131732) for instant verification.
+                <p className="text-xs text-[#6B7078] max-w-md mx-auto leading-relaxed">
+                  Thank you for submitting your dossier. Our team will contact as soon as possible.
                 </p>
               </div>
 
@@ -221,48 +216,14 @@ export const JoinCounselorModal: React.FC<JoinCounselorModalProps> = ({
                   </button>
                 </div>
                 <p className="text-[10px] text-[#6B7078]">
-                  Save this Tracking ID. Clients and compliance officers can verify your standing using this ID.
+                  Save this Tracking ID for your records.
                 </p>
-              </div>
-
-              {/* Direct Actions: WhatsApp & Image Download */}
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 max-w-md mx-auto pt-2">
-                <a
-                  href={generateCounselorWhatsAppLink(completedApp)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full sm:w-auto flex-1 py-3 px-5 bg-[#25D366] hover:bg-[#1EBE5D] text-white rounded-xl text-xs font-bold shadow-md flex items-center justify-center gap-2 cursor-pointer transition-all"
-                >
-                  <MessageSquare className="w-4 h-4" />
-                  <span>Send on WhatsApp (+92 340 0131732)</span>
-                  <ExternalLink className="w-3.5 h-3.5" />
-                </a>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    downloadDossierImage({
-                      referenceId: completedApp.trackingId,
-                      type: 'COUNSELOR_ACCREDITATION',
-                      title: 'Official Counselor Accreditation Dossier Pass',
-                      fullName: completedApp.fullName,
-                      phone: completedApp.phone,
-                      email: completedApp.email,
-                      category: Array.isArray(completedApp.visaCategories) ? completedApp.visaCategories.join(', ') : 'Immigration Law',
-                      destination: Array.isArray(completedApp.destinations) ? completedApp.destinations.join(', ') : 'Global',
-                    }, `Counselor_Accreditation_Pass_${completedApp.trackingId}.png`);
-                  }}
-                  className="w-full sm:w-auto py-3 px-5 bg-stone-900 hover:bg-black text-white rounded-xl text-xs font-bold shadow-sm flex items-center justify-center gap-2 cursor-pointer transition-colors"
-                >
-                  <Download className="w-4 h-4 text-amber-400" />
-                  <span>Download Pass (Image PNG)</span>
-                </button>
               </div>
 
               <div className="pt-2">
                 <button
                   onClick={onClose}
-                  className="px-8 py-2.5 bg-stone-100 hover:bg-stone-200 text-[#202124] text-xs font-bold rounded-full transition-colors cursor-pointer"
+                  className="px-8 py-3 bg-[#C8101E] hover:bg-[#760B16] text-white text-xs font-bold rounded-full shadow-md transition-colors cursor-pointer"
                 >
                   Close & Return
                 </button>
@@ -502,16 +463,15 @@ export const JoinCounselorModal: React.FC<JoinCounselorModalProps> = ({
                 <div className="flex items-center gap-2 pb-2 border-b border-[#F1EEEC]">
                   <CreditCard className="w-4 h-4 text-[#C8101E]" />
                   <h3 className="font-bold text-sm text-[#202124] uppercase tracking-wider">
-                    3. Banking Details & Payout IBAN
+                    3. Banking Details & Payout IBAN <span className="text-xs font-normal text-stone-500 lowercase">(Optional Initially)</span>
                   </h3>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-1">
-                    <label className="font-semibold text-[#202124]">Bank Name *</label>
+                    <label className="font-semibold text-[#202124]">Bank Name <span className="text-stone-400 font-normal">(Optional)</span></label>
                     <input
                       type="text"
-                      required
                       placeholder="e.g. Standard Chartered / HBL / SadaPay"
                       value={formData.bankName}
                       onChange={(e) => setFormData({ ...formData, bankName: e.target.value })}
@@ -519,10 +479,9 @@ export const JoinCounselorModal: React.FC<JoinCounselorModalProps> = ({
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="font-semibold text-[#202124]">Account Title (Must Match CNIC) *</label>
+                    <label className="font-semibold text-[#202124]">Account Title <span className="text-stone-400 font-normal">(Optional)</span></label>
                     <input
                       type="text"
-                      required
                       placeholder="Exact title as on bank statement"
                       value={formData.bankAccountTitle}
                       onChange={(e) => setFormData({ ...formData, bankAccountTitle: e.target.value })}
@@ -533,10 +492,9 @@ export const JoinCounselorModal: React.FC<JoinCounselorModalProps> = ({
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div className="space-y-1 sm:col-span-2">
-                    <label className="font-semibold text-[#202124]">Official IBAN (24 Characters) *</label>
+                    <label className="font-semibold text-[#202124]">Official IBAN <span className="text-stone-400 font-normal">(Optional)</span></label>
                     <input
                       type="text"
-                      required
                       placeholder="PKXX ABCD XXXXXXXXXXXXXXXX"
                       value={formData.iban}
                       onChange={(e) => setFormData({ ...formData, iban: e.target.value })}

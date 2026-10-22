@@ -247,88 +247,15 @@ export const LearnAndContactSection: React.FC<LearnAndContactProps> = ({ onOpenB
               </p>
 
               {sentSuccess ? (
-                <div className="p-6 bg-gradient-to-br from-emerald-50 via-green-50/50 to-white border-2 border-emerald-300 rounded-2xl space-y-4 shadow-sm animate-in fade-in duration-200">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-2xl bg-[#25D366] text-white flex items-center justify-center shadow-md shrink-0">
-                      <MessageSquare className="w-6 h-6" />
-                    </div>
-                    <div>
-                      <h5 className="text-sm font-bold text-[#202124]">
-                        Inquiry Prepared for WhatsApp Delivery!
-                      </h5>
-                      <p className="text-[11px] text-[#6B7078]">
-                        Direct transmission to Master Administrator Ghulam Mujtaba (+92 340 0131732)
-                      </p>
-                    </div>
+                <div className="p-8 bg-emerald-50 border border-emerald-200 rounded-2xl text-center space-y-4 shadow-sm animate-in fade-in duration-200">
+                  <CheckCircle2 className="w-12 h-12 text-emerald-600 mx-auto" />
+                  <div className="space-y-1">
+                    <h5 className="text-base font-bold text-emerald-900">Enquiry Received Successfully!</h5>
+                    <p className="text-xs text-emerald-800 max-w-sm mx-auto leading-relaxed">
+                      Thank you. Your assessment inquiry has been recorded. Our team will contact as soon as possible.
+                    </p>
                   </div>
-
-                  {lastSubmittedPayload && (
-                    <div className="p-3.5 bg-white rounded-xl border border-emerald-200 text-left space-y-1.5 font-mono text-[11px] text-[#202124] shadow-xs">
-                      <div className="text-[10px] font-bold text-emerald-800 uppercase tracking-wider mb-1 font-sans">
-                        📋 Formatted WhatsApp Dossier:
-                      </div>
-                      <p><strong>Client:</strong> {lastSubmittedPayload.name}</p>
-                      <p><strong>WhatsApp:</strong> {lastSubmittedPayload.phone}</p>
-                      <p><strong>Pathway:</strong> {lastSubmittedPayload.visaCategory} ({lastSubmittedPayload.destination})</p>
-                      <p className="truncate"><strong>Query:</strong> {lastSubmittedPayload.message || 'Consultation requested'}</p>
-                      <p className="text-[10px] text-emerald-700 pt-1 border-t border-emerald-100">
-                        Ref: {lastSubmittedPayload.refId}
-                      </p>
-                    </div>
-                  )}
-
-                  <div className="flex flex-col sm:flex-row gap-2.5 pt-1">
-                    <a
-                      href={lastSubmittedPayload ? generateWhatsAppLink(lastSubmittedPayload) : `https://wa.me/${ADMIN_WHATSAPP_NUMBER}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex-1 py-3 px-4 bg-[#25D366] hover:bg-[#1EBE5D] text-white rounded-xl text-xs font-bold shadow-md flex items-center justify-center gap-2 cursor-pointer transition-all"
-                    >
-                      <MessageSquare className="w-4 h-4" />
-                      <span>Open WhatsApp Now (+92 340 0131732)</span>
-                      <ExternalLink className="w-3.5 h-3.5" />
-                    </a>
-
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (lastSubmittedPayload) {
-                          downloadDossierImage({
-                            referenceId: lastSubmittedPayload.refId,
-                            type: 'INQUIRY',
-                            title: 'Official Client Assessment Transmission Pass',
-                            fullName: lastSubmittedPayload.name,
-                            phone: lastSubmittedPayload.phone,
-                            email: lastSubmittedPayload.email,
-                            category: lastSubmittedPayload.visaCategory,
-                            destination: lastSubmittedPayload.destination,
-                          }, `Visa_Syndicate_Pass_${lastSubmittedPayload.refId}.png`);
-                        }
-                      }}
-                      className="py-3 px-4 bg-emerald-100 hover:bg-emerald-200 border border-emerald-300 text-emerald-950 rounded-xl text-xs font-bold flex items-center justify-center gap-2 cursor-pointer shadow-xs transition-colors"
-                      title="Download Visual Dossier Card as PNG Image"
-                    >
-                      <Download className="w-4 h-4 text-emerald-700" />
-                      <span>Download Pass (Image)</span>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (lastSubmittedPayload) {
-                          navigator.clipboard.writeText(formatInquiryForWhatsApp(lastSubmittedPayload));
-                          setCopiedWhatsApp(true);
-                          setTimeout(() => setCopiedWhatsApp(false), 2000);
-                        }
-                      }}
-                      className="py-3 px-4 bg-white hover:bg-stone-50 border border-emerald-300 text-emerald-900 rounded-xl text-xs font-bold flex items-center justify-center gap-2 cursor-pointer shadow-xs"
-                    >
-                      {copiedWhatsApp ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
-                      <span>{copiedWhatsApp ? 'Copied!' : 'Copy Text'}</span>
-                    </button>
-                  </div>
-
-                  <div className="pt-2 text-center">
+                  <div className="pt-2">
                     <button
                       type="button"
                       onClick={() => {
@@ -338,7 +265,7 @@ export const LearnAndContactSection: React.FC<LearnAndContactProps> = ({ onOpenB
                         setPhone('');
                         setMessage('');
                       }}
-                      className="text-xs text-[#6B7078] hover:text-[#202124] underline cursor-pointer"
+                      className="text-xs text-emerald-700 hover:text-emerald-900 underline font-semibold cursor-pointer"
                     >
                       ← Submit another inquiry
                     </button>
