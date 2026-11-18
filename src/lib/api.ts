@@ -3,6 +3,14 @@ import {
   insertCounselorRequestDirect,
   fetchEnquiriesDirect,
   fetchCounselorRequestsDirect,
+  deleteCounselorRequestDirect,
+  fetchCounselorsDirect,
+  upsertCounselorDirect,
+  deleteCounselorDirect,
+  fetchPaymentsDirect,
+  upsertPaymentDirect,
+  fetchBookingsDirect,
+  upsertBookingDirect,
 } from './supabaseClient';
 
 export interface PublicCounselor {
@@ -123,6 +131,7 @@ export interface CounselorApplication {
   nationalIdNumber: string;
   nationalIdType: 'CNIC' | 'Passport' | 'National ID';
   documentProofUrl?: string;
+  photoUrl?: string;
   idCardFrontUrl?: string; // CNIC / ID Card front photo
   idCardBackUrl?: string; // CNIC / ID Card back photo
   policeVerificationRef?: string; // Police character certificate or report number
@@ -408,6 +417,13 @@ export const api = {
   },
 
   async getPublicCounselors(): Promise<PublicCounselor[]> {
+    // 1. Direct Supabase fetch (shared globally across all users, devices, and browsers)
+    let supabaseCounselors: PublicCounselor[] = [];
+    try {
+      supabaseCounselors = await fetchCounselorsDirect();
+    } catch {}
+
+    // 2. Node/Express server endpoint
     let serverCounselors: PublicCounselor[] = [];
     try {
       const res = await fetch('/api/public/counselors');
@@ -424,16 +440,24 @@ export const api = {
     const localCounselors = getStored<AdminCounselor[]>('counselors', DEFAULT_COUNSELORS);
     const map = new Map<string, PublicCounselor>();
 
+    // Layer 1: Local defaults
+    for (const c of localCounselors) {
+      if (c.isActive !== false && c.isPublic !== false) {
+        map.set(c.id, c);
+      }
+    }
+
+    // Layer 2: Server-side persisted counselors (override defaults)
     for (const c of serverCounselors) {
       if ((c as any).isActive !== false && (c as any).isPublic !== false) {
         map.set(c.id, c);
       }
     }
-    for (const c of localCounselors) {
-      if (c.isActive !== false && c.isPublic !== false) {
-        if (!map.has(c.id)) {
-          map.set(c.id, c);
-        }
+
+    // Layer 3: Supabase cloud counselors (highest precedence, global sync across all visitors)
+    for (const c of supabaseCounselors) {
+      if ((c as any).isActive !== false && (c as any).isPublic !== false) {
+        map.set(c.id, c);
       }
     }
 
@@ -468,7 +492,12 @@ export const api = {
       if (res.ok) {
         const contentType = res.headers.get('content-type');
         if (contentType && contentType.includes('application/json')) {
-          return await res.json();
+          const result = await res.json();
+          try {
+            if (result.booking) await upsertBookingDirect(result.booking);
+            if (result.payment) await upsertPaymentDirect(result.payment);
+          } catch {}
+          return result;
         }
       } else {
         const err = await res.json().catch(() => ({}));
@@ -513,15 +542,22 @@ export const api = {
       bookingReference: refCode,
       amount: newBooking.fee,
       currency: newBooking.currency,
-      method: 'sadapay',
-      status: 'pending',
-      transactionReference: '',
+      method: bookingData.paymentMethod || 'sadapay',
+      status: (bookingData.transactionReference || bookingData.proofImage) ? 'under_review' : 'pending',
+      transactionReference: bookingData.transactionReference || '',
+      senderAccount: bookingData.senderAccount || '',
+      proofNote: bookingData.proofNote || '',
+      proofImage: bookingData.proofImage || '',
       createdAt: new Date().toISOString(),
       customerName: newBooking.customerName,
       customerEmail: newBooking.customerEmail,
       destination: newBooking.destination,
       visaCategory: newBooking.visaCategory,
     };
+
+    if (bookingData.transactionReference || bookingData.proofImage) {
+      newBooking.status = 'payment_under_review';
+    }
 
     const bookings = getStored<Booking[]>('bookings', []);
     bookings.unshift(newBooking);
@@ -530,6 +566,11 @@ export const api = {
     const payments = getStored<Payment[]>('payments', []);
     payments.unshift(newPayment);
     setStored('payments', payments);
+
+    try {
+      await upsertBookingDirect(newBooking);
+      await upsertPaymentDirect(newPayment);
+    } catch {}
 
     return { booking: newBooking, payment: newPayment, bankDetails: siteContent.bankDetails };
   },
@@ -587,7 +628,12 @@ export const api = {
       if (res.ok) {
         const contentType = res.headers.get('content-type');
         if (contentType && contentType.includes('application/json')) {
-          return await res.json();
+          const result = await res.json();
+          try {
+            if (result.payment) await upsertPaymentDirect(result.payment);
+            if (result.booking) await upsertBookingDirect(result.booking);
+          } catch {}
+          return result;
         }
       }
     } catch {
@@ -618,6 +664,10 @@ export const api = {
         proofNote: payload.proofNote,
         proofImage: payload.proofImage,
         createdAt: new Date().toISOString(),
+        customerName: booking.customerName,
+        customerEmail: booking.customerEmail,
+        destination: booking.destination,
+        visaCategory: booking.visaCategory,
       };
       payments.unshift(payment);
     } else {
@@ -626,8 +676,15 @@ export const api = {
       payment.senderAccount = payload.senderAccount;
       payment.proofNote = payload.proofNote;
       payment.proofImage = payload.proofImage;
+      if (booking.customerName) payment.customerName = booking.customerName;
+      if (booking.customerEmail) payment.customerEmail = booking.customerEmail;
     }
     setStored('payments', payments);
+
+    try {
+      await upsertPaymentDirect(payment);
+      await upsertBookingDirect(booking);
+    } catch {}
 
     return { booking, payment };
   },
@@ -873,6 +930,12 @@ export const api = {
   },
 
   async getAdminCounselors(): Promise<AdminCounselor[]> {
+    let supabaseCounselors: AdminCounselor[] = [];
+    try {
+      supabaseCounselors = await fetchCounselorsDirect();
+    } catch {}
+
+    let serverCounselors: AdminCounselor[] = [];
     try {
       const res = await fetch('/api/admin/counselors', {
         headers: authHeaders(),
@@ -880,13 +943,27 @@ export const api = {
       if (res.ok) {
         const contentType = res.headers.get('content-type');
         if (contentType && contentType.includes('application/json')) {
-          return await res.json();
+          serverCounselors = await res.json();
         }
       }
     } catch {
       // Fallback
     }
-    return getStored<AdminCounselor[]>('counselors', DEFAULT_COUNSELORS);
+
+    const localCounselors = getStored<AdminCounselor[]>('counselors', DEFAULT_COUNSELORS);
+    const map = new Map<string, AdminCounselor>();
+
+    for (const c of localCounselors) {
+      map.set(c.id, c);
+    }
+    for (const c of serverCounselors) {
+      map.set(c.id, c);
+    }
+    for (const c of supabaseCounselors) {
+      map.set(c.id, c);
+    }
+
+    return Array.from(map.values());
   },
 
   async createCounselor(data: Partial<AdminCounselor>): Promise<AdminCounselor> {
@@ -947,10 +1024,57 @@ export const api = {
     }
     setStored('counselors', counselors);
 
+    try {
+      await upsertCounselorDirect(newCounselor);
+    } catch {}
+
     return newCounselor;
   },
 
   async updateCounselor(id: string, data: Partial<AdminCounselor>): Promise<AdminCounselor> {
+    const counselors = getStored<AdminCounselor[]>('counselors', DEFAULT_COUNSELORS);
+    const idx = counselors.findIndex((c) => c.id === id);
+    let updatedRecord: AdminCounselor;
+    if (idx !== -1) {
+      counselors[idx] = { ...counselors[idx], ...data, updatedAt: new Date().toISOString() };
+      updatedRecord = counselors[idx];
+      setStored('counselors', counselors);
+    } else {
+      updatedRecord = {
+        id,
+        fullName: data.fullName || 'Counselor',
+        displayName: data.displayName || data.fullName || 'Counselor',
+        title: data.title || 'Immigration Consultant',
+        email: data.email || '',
+        phone: data.phone || '',
+        bio: data.bio || '',
+        photoUrl: data.photoUrl || '',
+        expertise: data.expertise || ['Study Visa'],
+        destinations: data.destinations || ['UK'],
+        visaCategories: data.visaCategories || ['Study Visa'],
+        languages: data.languages || ['English'],
+        experienceYears: data.experienceYears || 3,
+        consultationDuration: data.consultationDuration || 45,
+        consultationFee: data.consultationFee || 12000,
+        currency: 'PKR',
+        availabilityDays: data.availabilityDays || ['Monday', 'Wednesday', 'Friday'],
+        timeSlots: data.timeSlots || ['02:00 PM - 02:45 PM'],
+        isActive: data.isActive ?? true,
+        isPublic: data.isPublic ?? true,
+        isFeatured: data.isFeatured ?? false,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      counselors.unshift(updatedRecord);
+      setStored('counselors', counselors);
+    }
+
+    // Direct Supabase sync so changes (photos, bio, fees) publish to all visitors and browsers immediately
+    try {
+      await upsertCounselorDirect(updatedRecord);
+    } catch {}
+
+    // Server backend sync
     try {
       const res = await fetch(`/api/admin/counselors/${id}`, {
         method: 'PUT',
@@ -967,15 +1091,21 @@ export const api = {
       // Fallback
     }
 
-    const counselors = getStored<AdminCounselor[]>('counselors', DEFAULT_COUNSELORS);
-    const idx = counselors.findIndex((c) => c.id === id);
-    if (idx === -1) throw new Error('Counselor not found');
-    counselors[idx] = { ...counselors[idx], ...data, updatedAt: new Date().toISOString() };
-    setStored('counselors', counselors);
-    return counselors[idx];
+    return updatedRecord;
   },
 
   async toggleCounselorVisibility(id: string): Promise<AdminCounselor> {
+    const counselors = getStored<AdminCounselor[]>('counselors', DEFAULT_COUNSELORS);
+    const idx = counselors.findIndex((c) => c.id === id);
+    if (idx === -1) throw new Error('Counselor not found');
+    counselors[idx].isPublic = !counselors[idx].isPublic;
+    counselors[idx].updatedAt = new Date().toISOString();
+    setStored('counselors', counselors);
+
+    try {
+      await upsertCounselorDirect(counselors[idx]);
+    } catch {}
+
     try {
       const res = await fetch(`/api/admin/counselors/${id}/toggle-visibility`, {
         method: 'PATCH',
@@ -987,20 +1117,23 @@ export const api = {
           return await res.json();
         }
       }
-    } catch {
-      // Fallback
-    }
+    } catch {}
 
-    const counselors = getStored<AdminCounselor[]>('counselors', DEFAULT_COUNSELORS);
-    const idx = counselors.findIndex((c) => c.id === id);
-    if (idx === -1) throw new Error('Counselor not found');
-    counselors[idx].isPublic = !counselors[idx].isPublic;
-    counselors[idx].updatedAt = new Date().toISOString();
-    setStored('counselors', counselors);
     return counselors[idx];
   },
 
   async toggleCounselorActive(id: string): Promise<AdminCounselor> {
+    const counselors = getStored<AdminCounselor[]>('counselors', DEFAULT_COUNSELORS);
+    const idx = counselors.findIndex((c) => c.id === id);
+    if (idx === -1) throw new Error('Counselor not found');
+    counselors[idx].isActive = !counselors[idx].isActive;
+    counselors[idx].updatedAt = new Date().toISOString();
+    setStored('counselors', counselors);
+
+    try {
+      await upsertCounselorDirect(counselors[idx]);
+    } catch {}
+
     try {
       const res = await fetch(`/api/admin/counselors/${id}/toggle-active`, {
         method: 'PATCH',
@@ -1012,16 +1145,8 @@ export const api = {
           return await res.json();
         }
       }
-    } catch {
-      // Fallback
-    }
+    } catch {}
 
-    const counselors = getStored<AdminCounselor[]>('counselors', DEFAULT_COUNSELORS);
-    const idx = counselors.findIndex((c) => c.id === id);
-    if (idx === -1) throw new Error('Counselor not found');
-    counselors[idx].isActive = !counselors[idx].isActive;
-    counselors[idx].updatedAt = new Date().toISOString();
-    setStored('counselors', counselors);
     return counselors[idx];
   },
 
@@ -1031,7 +1156,12 @@ export const api = {
     counselors = counselors.filter((c) => c.id !== id);
     setStored('counselors', counselors);
 
-    // 2. Safely synchronize with backend
+    // 2. Direct Supabase deletion
+    try {
+      await deleteCounselorDirect(id);
+    } catch {}
+
+    // 3. Safely synchronize with backend
     try {
       await fetch(`/api/admin/counselors/${id}`, {
         method: 'DELETE',
@@ -1043,6 +1173,7 @@ export const api = {
   },
 
   async getAdminBookings(): Promise<Booking[]> {
+    let serverBookings: Booking[] = [];
     try {
       const res = await fetch('/api/admin/bookings', {
         headers: authHeaders(),
@@ -1050,13 +1181,26 @@ export const api = {
       if (res.ok) {
         const contentType = res.headers.get('content-type');
         if (contentType && contentType.includes('application/json')) {
-          return await res.json();
+          serverBookings = await res.json();
         }
       }
-    } catch {
-      // Fallback
-    }
-    return getStored<Booking[]>('bookings', []);
+    } catch {}
+
+    let supabaseBookings: Booking[] = [];
+    try {
+      supabaseBookings = await fetchBookingsDirect();
+    } catch {}
+
+    const localBookings = getStored<Booking[]>('bookings', []);
+    const map = new Map<string, Booking>();
+
+    for (const b of localBookings) map.set(b.id, b);
+    for (const b of supabaseBookings) map.set(b.id, b);
+    for (const b of serverBookings) map.set(b.id, b);
+
+    return Array.from(map.values()).sort(
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
   },
 
   async updateBookingStatus(id: string, status: string, notes?: string): Promise<Booking> {
@@ -1083,10 +1227,16 @@ export const api = {
     if (notes) bookings[idx].notes = notes;
     bookings[idx].updatedAt = new Date().toISOString();
     setStored('bookings', bookings);
+
+    try {
+      await upsertBookingDirect(bookings[idx]);
+    } catch {}
+
     return bookings[idx];
   },
 
   async getAdminPayments(): Promise<Payment[]> {
+    let serverPayments: Payment[] = [];
     try {
       const res = await fetch('/api/admin/payments', {
         headers: authHeaders(),
@@ -1094,16 +1244,30 @@ export const api = {
       if (res.ok) {
         const contentType = res.headers.get('content-type');
         if (contentType && contentType.includes('application/json')) {
-          return await res.json();
+          serverPayments = await res.json();
         }
       }
-    } catch {
-      // Fallback
-    }
-    return getStored<Payment[]>('payments', []);
+    } catch {}
+
+    let supabasePayments: Payment[] = [];
+    try {
+      supabasePayments = await fetchPaymentsDirect();
+    } catch {}
+
+    const localPayments = getStored<Payment[]>('payments', []);
+    const map = new Map<string, Payment>();
+
+    for (const p of localPayments) map.set(p.id, p);
+    for (const p of supabasePayments) map.set(p.id, p);
+    for (const p of serverPayments) map.set(p.id, p);
+
+    return Array.from(map.values()).sort(
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
   },
 
   async verifyPayment(id: string, action: 'verify' | 'reject', notes?: string): Promise<any> {
+    let serverResult: any = null;
     try {
       const res = await fetch(`/api/admin/payments/${id}/verify`, {
         method: 'POST',
@@ -1113,7 +1277,7 @@ export const api = {
       if (res.ok) {
         const contentType = res.headers.get('content-type');
         if (contentType && contentType.includes('application/json')) {
-          return await res.json();
+          serverResult = await res.json();
         }
       }
     } catch {
@@ -1122,24 +1286,37 @@ export const api = {
 
     const payments = getStored<Payment[]>('payments', []);
     const payment = payments.find((p) => p.id === id);
-    if (!payment) throw new Error('Payment not found');
+    if (payment) {
+      payment.status = action === 'verify' ? 'verified' : 'rejected';
+      payment.verifiedBy = 'Ghulam Mujtaba';
+      payment.verifiedAt = new Date().toISOString();
+      if (notes) payment.proofNote = notes;
+      setStored('payments', payments);
+    }
 
-    payment.status = action === 'verify' ? 'verified' : 'rejected';
-    payment.verifiedBy = 'Ghulam Mujtaba';
-    payment.verifiedAt = new Date().toISOString();
-    if (notes) payment.proofNote = notes;
-    setStored('payments', payments);
+    try {
+      await upsertPaymentDirect({
+        id,
+        status: action === 'verify' ? 'verified' : 'rejected',
+        verifiedBy: 'Ghulam Mujtaba',
+        verifiedAt: new Date().toISOString(),
+        proofNote: notes || payment?.proofNote || '',
+      });
+    } catch {}
 
     // Also update booking status
     const bookings = getStored<Booking[]>('bookings', []);
-    const booking = bookings.find((b) => b.referenceCode === payment.bookingReference);
+    const booking = bookings.find((b) => b.referenceCode === payment?.bookingReference);
     if (booking) {
       booking.status = action === 'verify' ? 'confirmed' : 'pending_payment';
       booking.updatedAt = new Date().toISOString();
       setStored('bookings', bookings);
+      try {
+        await upsertBookingDirect(booking);
+      } catch {}
     }
 
-    return { payment, booking };
+    return serverResult || { success: true, payment };
   },
 
   async getAdminEnquiries(): Promise<ContactEnquiry[]> {
@@ -1566,17 +1743,22 @@ export const api = {
     }
 
     const localApps = getStored<CounselorApplication[]>('counselor_applications', []);
+    const deletedIds = getStored<string[]>('deleted_counselor_app_ids', []);
 
-    // Merge Supabase, server, and local apps, avoiding duplicates by id
+    // Merge Supabase, server, and local apps, strictly excluding deleted items
     const map = new Map<string, CounselorApplication>();
     for (const a of supabaseApps) {
-      map.set(a.id, a);
+      if (!deletedIds.includes(a.id) && (a as any).status !== 'deleted') {
+        map.set(a.id, a);
+      }
     }
     for (const a of serverApps) {
-      map.set(a.id, a);
+      if (!deletedIds.includes(a.id) && (a as any).status !== 'deleted') {
+        map.set(a.id, a);
+      }
     }
     for (const a of localApps) {
-      if (!map.has(a.id)) {
+      if (!deletedIds.includes(a.id) && (a as any).status !== 'deleted' && !map.has(a.id)) {
         map.set(a.id, a);
       }
     }
@@ -1640,14 +1822,29 @@ export const api = {
   },
 
   async deleteCounselorApplication(id: string): Promise<boolean> {
+    // 1. Mark in permanent deleted registry so it can never reappear
+    const deletedIds = getStored<string[]>('deleted_counselor_app_ids', []);
+    if (!deletedIds.includes(id)) {
+      deletedIds.push(id);
+      setStored('deleted_counselor_app_ids', deletedIds);
+    }
+
+    // 2. Delete / soft-delete directly from Supabase
     try {
-      const res = await fetch(`/api/admin/counselor-applications/${id}`, {
+      await deleteCounselorRequestDirect(id);
+    } catch (sbErr) {
+      console.warn('Supabase delete error:', sbErr);
+    }
+
+    // 3. Delete from backend server
+    try {
+      await fetch(`/api/admin/counselor-applications/${id}`, {
         method: 'DELETE',
         headers: authHeaders(),
       });
-      if (res.ok) return true;
     } catch {}
 
+    // 4. Delete from localStorage
     const apps = getStored<CounselorApplication[]>('counselor_applications', []);
     setStored('counselor_applications', apps.filter((a) => a.id !== id));
     return true;

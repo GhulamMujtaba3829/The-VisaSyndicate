@@ -28,6 +28,7 @@ interface EditDossierModalProps {
   dossier: CounselorApplication | null;
   onClose: () => void;
   onSave: (updates: Partial<CounselorApplication>) => void;
+  onDelete?: (id: string) => void;
   saving: boolean;
 }
 
@@ -36,6 +37,7 @@ export const EditDossierModal: React.FC<EditDossierModalProps> = ({
   dossier,
   onClose,
   onSave,
+  onDelete,
   saving,
 }) => {
   const [formData, setFormData] = useState<Partial<CounselorApplication>>({});
@@ -432,21 +434,35 @@ export const EditDossierModal: React.FC<EditDossierModalProps> = ({
           </div>
 
           {/* Form Actions */}
-          <div className="flex items-center justify-end gap-3 pt-3 border-t border-white/10">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-5 py-2.5 rounded-xl border border-white/20 text-stone-300 hover:text-white hover:bg-white/5 cursor-pointer"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={saving}
-              className="px-7 py-2.5 bg-gradient-to-r from-[#C8101E] to-[#8C0C16] hover:from-red-600 hover:to-red-800 text-white font-bold rounded-xl shadow-lg cursor-pointer transition-all disabled:opacity-50"
-            >
-              {saving ? 'Saving Dossier...' : 'Save Statutory Dossier'}
-            </button>
+          <div className="flex items-center justify-between gap-3 pt-3 border-t border-white/10">
+            {onDelete ? (
+              <button
+                type="button"
+                onClick={() => {
+                  if (dossier?.id) onDelete(dossier.id);
+                }}
+                className="px-4 py-2.5 rounded-xl bg-red-950/80 border border-red-500/40 text-red-300 hover:bg-red-900 hover:text-white font-semibold cursor-pointer transition-colors"
+              >
+                Delete Dossier Permanently
+              </button>
+            ) : <div />}
+
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={onClose}
+                className="px-5 py-2.5 rounded-xl border border-white/20 text-stone-300 hover:text-white hover:bg-white/5 cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={saving}
+                className="px-7 py-2.5 bg-gradient-to-r from-[#C8101E] to-[#8C0C16] hover:from-red-600 hover:to-red-800 text-white font-bold rounded-xl shadow-lg cursor-pointer transition-all disabled:opacity-50"
+              >
+                {saving ? 'Saving Dossier...' : 'Save Statutory Dossier'}
+              </button>
+            </div>
           </div>
         </form>
       </div>

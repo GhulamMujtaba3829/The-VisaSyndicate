@@ -83,6 +83,10 @@ export interface Payment {
   verifiedBy?: string;
   verifiedAt?: string;
   createdAt: string;
+  customerName?: string;
+  customerEmail?: string;
+  destination?: string;
+  visaCategory?: string;
 }
 
 export interface SiteContent {
@@ -121,6 +125,7 @@ export interface CounselorApplication {
   nationalIdNumber: string; // CNIC or Passport
   nationalIdType: 'CNIC' | 'Passport' | 'National ID';
   documentProofUrl?: string; // ID / Passport document upload or photo
+  photoUrl?: string; // Counselor profile portrait / headshot photo
   idCardFrontUrl?: string; // CNIC / ID Card front photo
   idCardBackUrl?: string; // CNIC / ID Card back photo
   policeVerificationRef?: string; // Police character certificate or report number
@@ -338,9 +343,41 @@ const defaultSupabaseConfig: SupabaseConfig = {
   isLiveSyncEnabled: true,
 };
 
+const defaultMasterCounselor: Counselor = {
+  id: 'csl_ghulam_mujtaba',
+  fullName: 'Ghulam Mujtaba Qureshi',
+  displayName: 'Ghulam Mujtaba Qureshi',
+  email: 'mujtabaqureshi3829@gmail.com',
+  phone: '+92 340 0131732',
+  title: 'Lead Strategic Visa & Immigration Consultant',
+  bio: 'Senior counselor specializing in UK, USA, Australia, and Canadian student & visit visa casework, statutory fund vetting, and interview preparation.',
+  photoUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80',
+  expertise: [
+    'Study Visa Advisory',
+    'Financial Audit (28-day rule)',
+    'Visit & Tourism Filings',
+    'Visa Refusal Remediation',
+    'Interview Coaching',
+  ],
+  destinations: ['UK', 'USA', 'Australia', 'Canada', 'Europe'],
+  visaCategories: ['Study Visa', 'Visit Visa', 'Business Visa'],
+  languages: ['English', 'Urdu', 'Punjabi'],
+  experienceYears: 6,
+  consultationDuration: 45,
+  consultationFee: 12000,
+  currency: 'PKR',
+  availabilityDays: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+  timeSlots: ['11:00 AM - 11:45 AM', '02:00 PM - 02:45 PM', '04:00 PM - 04:45 PM', '07:00 PM - 07:45 PM'],
+  isActive: true,
+  isPublic: true,
+  isFeatured: true,
+  createdAt: '2026-10-11T00:00:00.000Z',
+  updatedAt: '2026-10-11T00:00:00.000Z',
+};
+
 const initialData: DatabaseSchema = {
   users: [MASTER_ADMIN],
-  counselors: [], // Strictly 0 counselors initially per master requirements
+  counselors: [defaultMasterCounselor],
   counselorApplications: [],
   bookings: [],
   payments: [],
@@ -371,9 +408,17 @@ export class Database {
         if (!userList.some((u) => u.email.toLowerCase() === MASTER_ADMIN.email.toLowerCase())) {
           userList = [MASTER_ADMIN, ...userList];
         }
+
+        let counselorList: Counselor[] = parsed.counselors || [];
+        if (!counselorList || counselorList.length === 0) {
+          counselorList = [defaultMasterCounselor];
+        } else if (!counselorList.some((c) => c.id === 'csl_ghulam_mujtaba')) {
+          counselorList = [defaultMasterCounselor, ...counselorList];
+        }
+
         return {
           users: userList,
-          counselors: parsed.counselors || [],
+          counselors: counselorList,
           counselorApplications: parsed.counselorApplications || [],
           bookings: parsed.bookings || [],
           payments: parsed.payments || [],
@@ -452,6 +497,48 @@ export class Database {
     };
     this.persist();
     return this.data.counselors[idx];
+  }
+
+  upsertCounselor(counselor: Partial<Counselor> & { id: string }): Counselor {
+    const idx = this.data.counselors.findIndex((c) => c.id === counselor.id);
+    if (idx !== -1) {
+      this.data.counselors[idx] = {
+        ...this.data.counselors[idx],
+        ...counselor,
+        updatedAt: new Date().toISOString(),
+      };
+      this.persist();
+      return this.data.counselors[idx];
+    } else {
+      const newC: Counselor = {
+        id: counselor.id,
+        fullName: counselor.fullName || 'Counselor',
+        displayName: counselor.displayName || counselor.fullName || 'Counselor',
+        title: counselor.title || 'Immigration Consultant',
+        email: counselor.email || '',
+        phone: counselor.phone || '',
+        bio: counselor.bio || '',
+        photoUrl: counselor.photoUrl || '',
+        expertise: counselor.expertise || ['Study Visa', 'Visit Visa'],
+        destinations: counselor.destinations || ['UK', 'Canada', 'USA'],
+        visaCategories: counselor.visaCategories || ['Study Visa', 'Visit Visa'],
+        languages: counselor.languages || ['English', 'Urdu'],
+        experienceYears: counselor.experienceYears || 4,
+        consultationDuration: counselor.consultationDuration || 45,
+        consultationFee: counselor.consultationFee || 12000,
+        currency: counselor.currency || 'PKR',
+        availabilityDays: counselor.availabilityDays || ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+        timeSlots: counselor.timeSlots || ['11:00 AM - 11:45 AM', '02:00 PM - 02:45 PM'],
+        isActive: counselor.isActive ?? true,
+        isPublic: counselor.isPublic ?? true,
+        isFeatured: counselor.isFeatured ?? true,
+        createdAt: counselor.createdAt || new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      this.data.counselors.unshift(newC);
+      this.persist();
+      return newC;
+    }
   }
 
   deleteCounselor(id: string): boolean {

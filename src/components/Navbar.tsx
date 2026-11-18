@@ -250,11 +250,11 @@ export const Navbar: React.FC<NavbarProps> = ({
             {onOpenJoinCounselor && (
               <button
                 onClick={onOpenJoinCounselor}
-                className="hidden md:inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold text-[#C8101E] hover:text-white bg-[#C8101E]/10 hover:bg-[#C8101E] rounded-full transition-all cursor-pointer border border-[#C8101E]/20 whitespace-nowrap"
+                className="hidden md:inline-flex items-center flex-nowrap gap-1.5 px-3.5 py-1.5 text-xs font-bold text-[#C8101E] hover:text-white bg-[#C8101E]/10 hover:bg-[#C8101E] rounded-full transition-all cursor-pointer border border-[#C8101E]/20 whitespace-nowrap shrink-0 select-none"
                 title="Join as Counselor"
               >
-                <ShieldCheck className="w-3.5 h-3.5" />
-                <span>Join Us</span>
+                <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
+                <span className="whitespace-nowrap inline-block">Join Us</span>
               </button>
             )}
 

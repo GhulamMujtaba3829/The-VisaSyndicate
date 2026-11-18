@@ -30,7 +30,6 @@ import {
   formatCounselorApplicationForWhatsApp,
   ADMIN_WHATSAPP_NUMBER,
 } from '../lib/whatsapp';
-import { downloadDossierImage } from '../lib/dossierCanvas';
 
 interface JoinCounselorModalProps {
   isOpen: boolean;
@@ -56,6 +55,7 @@ export const JoinCounselorModal: React.FC<JoinCounselorModalProps> = ({
     nationalIdType: 'CNIC' as 'CNIC' | 'Passport' | 'National ID',
     nationalIdNumber: '',
     documentProofUrl: '',
+    photoUrl: '',
     licenseNumber: '',
     issuingAuthority: 'High Court Bar / Regulatory Board',
     agencyName: '',
@@ -108,6 +108,20 @@ export const JoinCounselorModal: React.FC<JoinCounselorModalProps> = ({
     const reader = new FileReader();
     reader.onload = () => {
       setFormData((prev) => ({ ...prev, documentProofUrl: reader.result as string }));
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      setErrorMsg('Photo size exceeds 5MB limit.');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      setFormData((prev) => ({ ...prev, photoUrl: reader.result as string }));
     };
     reader.readAsDataURL(file);
   };
@@ -299,22 +313,24 @@ export const JoinCounselorModal: React.FC<JoinCounselorModalProps> = ({
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-1">
-                    <label className="font-semibold text-[#202124]">Regulatory License / Bar Reg No. *</label>
+                    <label className="font-semibold text-[#202124]">
+                      Regulatory License / Bar Reg No. <span className="text-stone-400 font-normal">(Optional)</span>
+                    </label>
                     <input
                       type="text"
-                      required
-                      placeholder="e.g. OISC / MARA / Bar Council Reg No."
+                      placeholder="e.g. OISC / MARA / Bar Council Reg No. (Optional)"
                       value={formData.licenseNumber}
                       onChange={(e) => setFormData({ ...formData, licenseNumber: e.target.value })}
                       className="w-full px-3.5 py-2.5 rounded-xl border border-[#E9DAD9] bg-white focus:border-[#C8101E] focus:outline-none"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="font-semibold text-[#202124]">Issuing Authority / Law Society *</label>
+                    <label className="font-semibold text-[#202124]">
+                      Issuing Authority / Law Society <span className="text-stone-400 font-normal">(Optional)</span>
+                    </label>
                     <input
                       type="text"
-                      required
-                      placeholder="e.g. Punjab Bar Council / High Court Bar"
+                      placeholder="e.g. Punjab Bar Council / High Court Bar (Optional)"
                       value={formData.issuingAuthority}
                       onChange={(e) => setFormData({ ...formData, issuingAuthority: e.target.value })}
                       className="w-full px-3.5 py-2.5 rounded-xl border border-[#E9DAD9] bg-white focus:border-[#C8101E] focus:outline-none"
@@ -322,20 +338,44 @@ export const JoinCounselorModal: React.FC<JoinCounselorModalProps> = ({
                   </div>
                 </div>
 
-                <div className="space-y-1">
-                  <label className="font-semibold text-[#202124]">Upload ID / Passport Document Proof (Optional Scan)</label>
-                  <div className="flex items-center gap-3">
-                    <label className="px-4 py-2 bg-[#FAF8F6] border border-[#E9DAD9] hover:bg-[#F1EEEC] rounded-xl cursor-pointer flex items-center gap-2 font-medium">
-                      <Upload className="w-3.5 h-3.5 text-[#C8101E]" />
-                      <span>{formData.documentProofUrl ? 'Change Document File' : 'Attach ID Scan (Max 5MB)'}</span>
-                      <input type="file" accept="image/*,.pdf" onChange={handleDocumentUpload} className="hidden" />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="font-semibold text-[#202124]">
+                      Profile Photograph <span className="text-stone-400 font-normal">(Optional)</span>
                     </label>
-                    {formData.documentProofUrl && (
-                      <span className="text-emerald-700 flex items-center gap-1 font-semibold text-[11px]">
-                        <CheckCircle2 className="w-3.5 h-3.5" />
-                        <span>Document Attached</span>
-                      </span>
-                    )}
+                    <div className="flex items-center gap-3">
+                      {formData.photoUrl && (
+                        <img
+                          src={formData.photoUrl}
+                          alt="Counselor Headshot"
+                          className="w-10 h-10 rounded-full object-cover border-2 border-[#C8101E] shadow-sm shrink-0"
+                        />
+                      )}
+                      <label className="px-3.5 py-2 bg-[#FAF8F6] border border-[#E9DAD9] hover:bg-[#F1EEEC] rounded-xl cursor-pointer flex items-center gap-2 font-medium text-xs">
+                        <Upload className="w-3.5 h-3.5 text-[#C8101E]" />
+                        <span>{formData.photoUrl ? 'Change Profile Photo' : 'Upload Headshot / Photo (Optional)'}</span>
+                        <input type="file" accept="image/*" onChange={handlePhotoUpload} className="hidden" />
+                      </label>
+                    </div>
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="font-semibold text-[#202124]">
+                      ID / Passport Document Proof <span className="text-stone-400 font-normal">(Optional)</span>
+                    </label>
+                    <div className="flex items-center gap-3">
+                      <label className="px-3.5 py-2 bg-[#FAF8F6] border border-[#E9DAD9] hover:bg-[#F1EEEC] rounded-xl cursor-pointer flex items-center gap-2 font-medium text-xs">
+                        <Upload className="w-3.5 h-3.5 text-[#C8101E]" />
+                        <span>{formData.documentProofUrl ? 'Change Document File' : 'Attach ID Scan (Optional)'}</span>
+                        <input type="file" accept="image/*,.pdf" onChange={handleDocumentUpload} className="hidden" />
+                      </label>
+                      {formData.documentProofUrl && (
+                        <span className="text-emerald-700 flex items-center gap-1 font-semibold text-[11px]">
+                          <CheckCircle2 className="w-3.5 h-3.5" />
+                          <span>Attached</span>
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>

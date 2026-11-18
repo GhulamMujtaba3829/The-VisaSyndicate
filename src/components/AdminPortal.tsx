@@ -373,12 +373,16 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
   };
 
   const handleDeleteApplication = async (id: string) => {
+    if (!window.confirm('Are you sure you want to permanently delete this counselor application dossier?')) {
+      return;
+    }
     setCounselorApplications((prev) => prev.filter((a) => a.id !== id));
     try {
       await api.deleteCounselorApplication(id);
       loadAdminData();
     } catch (err: any) {
-      console.error(err);
+      console.error('Delete application error:', err);
+      alert('Could not delete application: ' + (err.message || 'Unknown error'));
     }
   };
 
@@ -686,20 +690,55 @@ CREATE TABLE IF NOT EXISTS public.enquiries (
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- 6. Counselor Requests / Applications Table
+CREATE TABLE IF NOT EXISTS public.counselor_requests (
+    id TEXT PRIMARY KEY,
+    tracking_id TEXT,
+    full_name TEXT,
+    display_name TEXT,
+    email TEXT,
+    phone TEXT,
+    whatsapp_number TEXT,
+    national_id_number TEXT,
+    national_id_type TEXT,
+    document_proof_url TEXT,
+    license_number TEXT,
+    issuing_authority TEXT,
+    physical_address TEXT,
+    city TEXT,
+    country TEXT,
+    bank_name TEXT,
+    bank_account_title TEXT,
+    iban TEXT,
+    consultation_fee INTEGER DEFAULT 12000,
+    preferred_currency TEXT DEFAULT 'PKR',
+    bio TEXT,
+    status TEXT DEFAULT 'pending_review',
+    fraud_risk_score INTEGER DEFAULT 0,
+    anti_fraud_agreement_accepted BOOLEAN DEFAULT true,
+    submitted_at TIMESTAMPTZ DEFAULT NOW()
+);
+
 -- Enable Row Level Security (RLS)
 ALTER TABLE public.counselors ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.bookings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.payments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.blog_posts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.enquiries ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.counselor_requests ENABLE ROW LEVEL SECURITY;
 
--- Public read access policies for website visitors
-CREATE POLICY "Public can view active published counselors" ON public.counselors FOR SELECT USING (is_active = true AND is_public = true);
-CREATE POLICY "Public can view published blogs" ON public.blog_posts FOR SELECT USING (is_published = true);
-CREATE POLICY "Public can insert bookings" ON public.bookings FOR INSERT WITH CHECK (true);
-CREATE POLICY "Public can view booking by reference" ON public.bookings FOR SELECT USING (true);
-CREATE POLICY "Public can insert payments" ON public.payments FOR INSERT WITH CHECK (true);
-CREATE POLICY "Public can insert enquiries" ON public.enquiries FOR INSERT WITH CHECK (true);
+-- Permissive policies for web portal operations
+DROP POLICY IF EXISTS "Allow all on counselors" ON public.counselors;
+CREATE POLICY "Allow all on counselors" ON public.counselors FOR ALL USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Allow all on counselor_requests" ON public.counselor_requests;
+CREATE POLICY "Allow all on counselor_requests" ON public.counselor_requests FOR ALL USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Public can view published blogs" ON public.blog_posts FOR SELECT USING (is_published = true);
+DROP POLICY IF EXISTS "Public can insert bookings" ON public.bookings FOR INSERT WITH CHECK (true);
+DROP POLICY IF EXISTS "Public can view booking by reference" ON public.bookings FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Public can insert payments" ON public.payments FOR INSERT WITH CHECK (true);
+DROP POLICY IF EXISTS "Public can insert enquiries" ON public.enquiries FOR ALL USING (true) WITH CHECK (true);
 `;
     navigator.clipboard.writeText(sql);
     setSqlCopied(true);
@@ -2559,6 +2598,10 @@ CREATE POLICY "Public can insert enquiries" ON public.enquiries FOR INSERT WITH 
         dossier={editingDossier}
         onClose={() => setEditingDossier(null)}
         onSave={handleSaveDossier}
+        onDelete={(id) => {
+          setEditingDossier(null);
+          handleDeleteApplication(id);
+        }}
         saving={savingDossier}
       />
 

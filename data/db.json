@@ -87,6 +87,29 @@
       "currency": "PKR",
       "createdAt": "2026-10-11T09:27:01.065Z",
       "updatedAt": "2026-10-11T09:27:51.948Z"
+    },
+    {
+      "id": "book_1794947532638",
+      "referenceCode": "TVS-2026-78742",
+      "counselorId": null,
+      "counselorName": "General Senior Advisory Panel",
+      "customerName": "Test Client",
+      "customerEmail": "test@example.com",
+      "customerPhone": "+923001234567",
+      "countryOfResidence": "Pakistan",
+      "destination": "UK",
+      "visaCategory": "Study Visa",
+      "consultationType": "Study Visa Assessment",
+      "preferredDate": "2026-11-20",
+      "preferredTimeSlot": "02:00 PM - 02:45 PM",
+      "reason": "Comprehensive Visa Assessment",
+      "language": "English / Urdu",
+      "notes": "",
+      "status": "payment_under_review",
+      "fee": 10000,
+      "currency": "PKR",
+      "createdAt": "2026-11-17T20:32:12.638Z",
+      "updatedAt": "2026-11-17T20:32:12.638Z"
     }
   ],
   "payments": [
@@ -103,6 +126,20 @@
       "verifiedBy": "mujtabaqureshi3829@gmail.com",
       "verifiedAt": "2026-10-15T16:11:03.198Z",
       "proofNote": "Rejected"
+    },
+    {
+      "id": "pay_1794947532638",
+      "bookingId": "book_1794947532638",
+      "bookingReference": "TVS-2026-78742",
+      "amount": 10000,
+      "currency": "PKR",
+      "method": "sadapay",
+      "status": "under_review",
+      "transactionReference": "TXN-TEST-123",
+      "senderAccount": "03400131732",
+      "proofNote": "Testing payment proof submission",
+      "proofImage": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
+      "createdAt": "2026-11-17T20:32:12.638Z"
     }
   ],
   "enquiries": [
